@@ -4,9 +4,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { RoutePath, Language, EnquiryCategory } from './types';
 import { Navigation } from './components/Navigation';
 import { Footer } from './components/Footer';
+import { ScrollProgressBar } from './components/ScrollReveal';
 import { HomePage } from './pages/HomePage';
 import { StoryPage } from './pages/StoryPage';
 import { WorkPage } from './pages/WorkPage';
@@ -137,9 +139,14 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col bg-[#F4F6F7] text-[#101B25] ${
+    <div className={`min-h-screen flex flex-col ${
+      currentRoute === 'home' && !isNotFound ? 'bg-[#080E15]' : 'bg-[#F4F6F7]'
+    } text-[#101B25] transition-colors duration-300 ${
       language === 'bn' ? 'font-bengali-body' : 'font-body'
     }`}>
+      {/* Dynamic Scroll Progress Bar */}
+      <ScrollProgressBar />
+
       {/* Top Bar Navigation */}
       <Navigation
         currentRoute={isNotFound ? 'home' : currentRoute}
@@ -148,38 +155,54 @@ export default function App() {
         onToggleLanguage={handleToggleLanguage}
       />
 
-      {/* Semantic Main Content Area */}
+      {/* Semantic Main Content Area with Buttery Smooth Page Transitions */}
       <main id="main-content" className="flex-1 focus:outline-none" tabIndex={-1}>
-        {isNotFound ? (
-          <NotFoundPage onNavigate={handleNavigate} language={language} />
-        ) : (
-          <>
-            {currentRoute === 'home' && (
-              <HomePage onNavigate={handleNavigate} language={language} />
-            )}
-            {currentRoute === 'story' && (
-              <StoryPage onNavigate={handleNavigate} language={language} />
-            )}
-            {currentRoute === 'work' && (
-              <WorkPage onNavigate={handleNavigate} language={language} />
-            )}
-            {currentRoute === 'music' && (
-              <MusicPage onNavigate={handleNavigate} language={language} />
-            )}
-            {currentRoute === 'ideas' && (
-              <IdeasPage onNavigate={handleNavigate} language={language} />
-            )}
-            {currentRoute === 'speaking' && (
-              <SpeakingPage onNavigate={handleNavigate} language={language} />
-            )}
-            {currentRoute === 'blog' && (
-              <BlogPage onNavigate={handleNavigate} language={language} />
-            )}
-            {currentRoute === 'contact' && (
-              <ContactPage initialCategory={preselectedCategory} language={language} />
-            )}
-          </>
-        )}
+        <AnimatePresence mode="wait">
+          {isNotFound ? (
+            <motion.div
+              key="notfound"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.28, ease: 'easeOut' }}
+            >
+              <NotFoundPage onNavigate={handleNavigate} language={language} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key={currentRoute}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.28, ease: 'easeOut' }}
+            >
+              {currentRoute === 'home' && (
+                <HomePage onNavigate={handleNavigate} language={language} />
+              )}
+              {currentRoute === 'story' && (
+                <StoryPage onNavigate={handleNavigate} language={language} />
+              )}
+              {currentRoute === 'work' && (
+                <WorkPage onNavigate={handleNavigate} language={language} />
+              )}
+              {currentRoute === 'music' && (
+                <MusicPage onNavigate={handleNavigate} language={language} />
+              )}
+              {currentRoute === 'ideas' && (
+                <IdeasPage onNavigate={handleNavigate} language={language} />
+              )}
+              {currentRoute === 'speaking' && (
+                <SpeakingPage onNavigate={handleNavigate} language={language} />
+              )}
+              {currentRoute === 'blog' && (
+                <BlogPage onNavigate={handleNavigate} language={language} />
+              )}
+              {currentRoute === 'contact' && (
+                <ContactPage initialCategory={preselectedCategory} language={language} />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
       {/* Editorial Footer */}

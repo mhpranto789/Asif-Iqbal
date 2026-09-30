@@ -3,6 +3,8 @@ import { RoutePath, Language, EnquiryCategory, ContactFormData } from '../types'
 import { translations } from '../data/translations';
 import { assetConfig } from '../data/assetConfig';
 import { Send, Copy, Check, Mail, AlertCircle, Info, ExternalLink } from 'lucide-react';
+import { motion } from 'motion/react';
+import { ScrollSection, ScrollReveal } from '../components/ScrollReveal';
 
 interface ContactPageProps {
   initialCategory?: EnquiryCategory;
@@ -135,27 +137,28 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialCategory = 'bus
   };
 
   return (
-    <div className="space-y-16 lg:space-y-24 py-12 pb-24">
+    <div className="space-y-16 lg:space-y-24 py-10 pb-24">
       {/* Header */}
-      <section className="max-w-[1280px] mx-auto px-6">
+      <ScrollSection yOffset={24} className="max-w-[1280px] mx-auto px-6">
         <div className="max-w-3xl space-y-4">
-          <div className="text-xs font-semibold tracking-wider uppercase text-[#155E63]">
-            {language === 'en' ? 'Direct Channels' : 'সরাসরি যোগাযোগ'}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-semibold tracking-wider uppercase">
+            <Mail className="w-3.5 h-3.5 text-teal-600" />
+            <span>{language === 'en' ? 'Direct Channels' : 'সরাসরি যোগাযোগ'}</span>
           </div>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-[#101B25] tracking-tight">
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0D161F] tracking-tight">
             {t.title}
           </h1>
-          <p className="text-base sm:text-lg text-[#596774] leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-body">
             {t.subtitle}
           </p>
         </div>
-      </section>
+      </ScrollSection>
 
       {/* Main Form Section */}
-      <section className="max-w-[1280px] mx-auto px-6">
+      <ScrollSection className="max-w-[1280px] mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* Left Form (7 cols) */}
-          <div className="lg:col-span-7 bg-white border border-[#D9E1E5] p-8 sm:p-10 space-y-8">
+          <ScrollReveal direction="up" className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-8 sm:p-10 space-y-8 shadow-sm">
             {/* Transparent Preview Notice */}
             {!assetConfig.contactEndpointUrl && (
               <div className="p-4 bg-[#F4F6F7] border border-[#D9E1E5] flex items-start gap-3 text-xs text-[#596774]">
@@ -276,7 +279,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialCategory = 'bus
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-3.5 bg-[#101B25] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#155E63] transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="px-6 py-3.5 bg-[#0D161F] text-white text-xs font-semibold uppercase tracking-wider hover:bg-teal-700 transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-50 rounded-xl shadow-xs"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>
@@ -288,7 +291,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialCategory = 'bus
                   <button
                     type="button"
                     onClick={handleClear}
-                    className="text-xs text-[#596774] hover:text-[#101B25] cursor-pointer"
+                    className="text-xs text-slate-600 hover:text-slate-950 font-medium cursor-pointer"
                   >
                     {t.labels.clearForm}
                   </button>
@@ -298,9 +301,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialCategory = 'bus
 
             {/* Generated Draft Drawer if Form is Prepared */}
             {submissionSuccess && generatedDraftText && (
-              <div className="p-6 bg-[#101B25] text-white space-y-4 border border-[#101B25]">
+              <div className="p-6 bg-[#0D161F] text-white space-y-4 border border-teal-500/30 rounded-2xl shadow-xl">
                 <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <span className="text-xs font-mono uppercase text-[#155E63]">
+                  <span className="text-xs font-mono uppercase text-teal-400 font-semibold">
                     {t.success.draftGenerated}
                   </span>
                   <div className="flex items-center gap-2">
@@ -335,10 +338,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialCategory = 'bus
                 </pre>
               </div>
             )}
-          </div>
+          </ScrollReveal>
 
           {/* Right Information & Venture Routing (5 cols) */}
-          <div className="lg:col-span-5 space-y-8">
+          <ScrollReveal direction="left" delay={0.15} className="lg:col-span-5 space-y-8">
             <div className="p-8 bg-[#101B25] text-white space-y-6">
               <span className="text-xs font-mono text-[#155E63] uppercase">
                 Direct Channels
@@ -404,9 +407,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ initialCategory = 'bus
                   : 'সকল বার্তা গুরুত্বের সাথে পর্যালোচনা করা হয়। প্রাতিষ্ঠানিক তথ্যের পূর্ণ গোপনীয়তা বজায় রাখা হয়।'}
               </p>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
-      </section>
+      </ScrollSection>
     </div>
   );
 };

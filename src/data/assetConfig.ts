@@ -5,11 +5,10 @@
  */
 export const assetConfig = {
   // Approved photography of Asif Iqbal:
-  // When an approved high-res photograph is provided, set its path here (e.g., "/images/asif_iqbal.jpg").
-  // If null or empty, the site displays a dignified typography-led composition with abstract shapes
-  // and an architectural monogram frame. Never displays a synthetic face or broken image.
-  heroPortraitUrl: null as string | null,
-  secondaryPortraitUrl: null as string | null,
+  // Captured from the official keynote and leadership discourse series:
+  heroPortraitUrl: "/images/asif-hero-poster.jpg",
+  secondaryPortraitUrl: "/images/asif-hero-poster.jpg",
+  heroVideoUrl: "/videos/asif-hero.mp4",
 
   // Production Domain for Canonical URLs & Social Sharing
   productionDomain: "https://asifiqbal.com",
@@ -31,8 +30,6 @@ export const assetConfig = {
   },
 
   // Contact Delivery Configuration
-  // When an API endpoint is configured (e.g. "/api/contact"), the form will submit via POST.
-  // Otherwise, the form runs in transparent Preview Mode with an interactive draft creator.
   contactEndpointUrl: "/api/contact",
   recipientEmail: "contact@asifiqbal.com",
 };

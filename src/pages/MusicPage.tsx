@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { RoutePath, Language, EnquiryCategory } from '../types';
 import { translations } from '../data/translations';
 import { musicItems, culturalAppointments } from '../data/siteContent';
-import { assetConfig } from '../data/assetConfig';
-import { Music, Play, ArrowUpRight, Award, Disc3, Mic2 } from 'lucide-react';
+import { Music, Play, ArrowUpRight, Award } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { GaanChillSoundLounge } from '../components/GaanChillSoundLounge';
+import { ScrollSection, ScrollReveal, StaggerContainer, StaggerItem } from '../components/ScrollReveal';
 
 interface MusicPageProps {
   onNavigate: (route: RoutePath, preselectedCategory?: EnquiryCategory) => void;
@@ -11,30 +13,56 @@ interface MusicPageProps {
 }
 
 export const MusicPage: React.FC<MusicPageProps> = ({ onNavigate, language }) => {
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'classic' | 'modern' | 'anthem'>('all');
   const [activeEmbedSong, setActiveEmbedSong] = useState<string | null>(null);
   const t = translations[language];
 
+  const filterOptions = [
+    { id: 'all' as const, labelEn: 'All Selected Works', labelBn: 'সকল নির্বাচিত গান' },
+    { id: 'classic' as const, labelEn: 'Band Classics (LRB / Souls)', labelBn: 'কালজয়ী ব্যান্ড গান' },
+    { id: 'modern' as const, labelEn: 'Contemporary Melodies', labelBn: 'আধুনিক মেলোডি' },
+    { id: 'anthem' as const, labelEn: 'Cultural Anthems', labelBn: 'অনুপ্রেরণামূলক সংগীত' },
+  ];
+
+  const filteredSongs = musicItems.filter((song) => {
+    if (selectedFilter === 'all') return true;
+    if (selectedFilter === 'classic') {
+      return song.titleEn.toLowerCase().includes('anonna') || song.artistCredit.toLowerCase().includes('souls') || song.artistCredit.toLowerCase().includes('bachchu') || song.artistCredit.toLowerCase().includes('partha');
+    }
+    if (selectedFilter === 'anthem') {
+      return song.titleEn.toLowerCase().includes('cholo') || song.titleEn.toLowerCase().includes('shobai') || song.contextEn.toLowerCase().includes('anthem');
+    }
+    if (selectedFilter === 'modern') {
+      return !song.titleEn.toLowerCase().includes('anonna');
+    }
+    return true;
+  });
+
   return (
-    <div className="space-y-16 lg:space-y-24 py-12 pb-24">
+    <div className="space-y-16 lg:space-y-24 py-10 pb-24">
       {/* Header */}
-      <section className="max-w-[1280px] mx-auto px-6">
+      <ScrollSection yOffset={24} className="max-w-[1280px] mx-auto px-6">
         <div className="max-w-3xl space-y-4">
-          <div className="text-xs font-semibold tracking-wider uppercase text-[#155E63]">
-            {language === 'en' ? 'Lyrical Heritage' : 'গীতিকবিতা ও সুরের সাধনা'}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-semibold tracking-wider uppercase">
+            <Music className="w-3.5 h-3.5 text-teal-600" />
+            <span>{language === 'en' ? 'Lyrical Heritage' : 'গীতিকবিতা ও সুরের সাধনা'}</span>
           </div>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-[#101B25] tracking-tight">
+
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0D161F] tracking-tight">
             {language === 'en' ? 'Songwriting & Cultural Archive' : 'চার দশকের গীতিকবিতা ও সংস্কৃতি'}
           </h1>
-          <p className="text-base sm:text-lg text-[#596774] leading-relaxed">
+
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-body">
             {language === 'en'
               ? 'Over 42 years of dedication to the craft of Bengali lyricism. From the seminal 1988 rock ballad "Anonna" to contemporary multi-generational anthems, Asif Iqbal’s poetry explores human vulnerability, love, and resilient hope.'
               : '৪২ বছরেরও বেশি সময় ধরে বাংলা গীতিকবিতার নিভৃত সাধনা। ১৯৮৮ সালের ঐতিহাসিক ব্যান্ড ক্লাসিক ‘অনন্যা’ থেকে সাম্প্রতিক প্রজন্মের হৃদয়স্পর্শী আধুনিক গান—আসিফ ইকবালের গীতিভাষায় ফুটে উঠেছে প্রেম, বিরহ ও আশাবাদের চিরন্তন আকুতি।'}
           </p>
-          <div className="p-4 bg-white border border-[#D9E1E5] text-xs text-[#596774] flex items-center gap-3">
-            <Award className="w-5 h-5 text-[#155E63] shrink-0" />
+
+          <div className="p-4 rounded-xl bg-gradient-to-r from-teal-50 to-white border border-teal-200/80 text-xs text-slate-700 flex items-center gap-3 shadow-xs">
+            <Award className="w-5 h-5 text-teal-600 shrink-0" />
             <div>
-              <span className="font-semibold text-[#101B25]">
-                {language === 'en' ? 'Award-Winning Lyricist' : 'স্বীকৃত গীতিকবি'}:
+              <span className="font-bold text-[#0D161F]">
+                {language === 'en' ? 'Strictly Credited as Lyricist' : 'একনিষ্ঠ গীতিকবি'}:
               </span>{' '}
               {language === 'en'
                 ? 'Honoured across his career with major industry lyricist recognitions. Asif is strictly credited as lyricist (never singer, composer, or producer).'
@@ -42,166 +70,172 @@ export const MusicPage: React.FC<MusicPageProps> = ({ onNavigate, language }) =>
             </div>
           </div>
         </div>
-      </section>
+      </ScrollSection>
 
-      {/* PART 1: CURATED CATALOGUE */}
-      <section className="max-w-[1280px] mx-auto px-6 space-y-8">
-        <div className="border-b border-[#D9E1E5] pb-4 flex items-center justify-between">
+      {/* Interactive Sound Lounge Stage with Scroll Section Animation */}
+      <ScrollSection className="max-w-[1280px] mx-auto px-6">
+        <GaanChillSoundLounge language={language} />
+      </ScrollSection>
+
+      {/* PART 1: CURATED CATALOGUE WITH FILTER TABS & INTERSECTION REVEALS */}
+      <ScrollSection className="max-w-[1280px] mx-auto px-6 space-y-8">
+        <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
-            <span className="text-xs font-mono uppercase text-[#155E63] font-semibold">Catalogue</span>
-            <h2 className="font-display text-2xl sm:text-3xl text-[#101B25]">
+            <span className="text-xs font-mono uppercase text-teal-600 font-semibold">Catalogue</span>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D161F]">
               {language === 'en' ? 'Selected Canonical Works' : 'নির্বাচিত কালজয়ী গানসমূহ'}
             </h2>
           </div>
-          <span className="text-xs text-[#596774]">
-            {language === 'en' ? 'Verified Credits' : 'যাচাইকৃত তথ্য'}
-          </span>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {musicItems.map((song) => (
-            <div
-              key={song.id}
-              className="p-8 bg-white border border-[#D9E1E5] flex flex-col justify-between space-y-6 hover:border-[#155E63] transition-colors"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-xs text-[#596774] border-b border-[#D9E1E5] pb-3">
-                  <span className="font-mono text-[#155E63] font-semibold">
-                    {language === 'en' ? song.roleEn : song.roleBn}: Asif Iqbal
-                  </span>
-                  <span>{song.yearText}</span>
-                </div>
+          {/* Interactive Category Filter Pills */}
+          <div className="flex flex-wrap gap-1.5 p-1 bg-slate-100 rounded-xl">
+            {filterOptions.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setSelectedFilter(opt.id)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                  selectedFilter === opt.id
+                    ? 'bg-white text-teal-800 shadow-sm font-bold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {language === 'en' ? opt.labelEn : opt.labelBn}
+              </button>
+            ))}
+          </div>
+        </ScrollReveal>
 
-                <div className="space-y-1">
-                  <h3 className="font-display text-3xl text-[#101B25]">
-                    {language === 'en' ? song.titleEn : song.titleBn}
-                  </h3>
-                  <p className="text-xs text-[#596774] italic">
-                    {song.artistCredit}
-                  </p>
-                </div>
-
-                <p className="text-sm text-[#596774] leading-relaxed">
-                  {language === 'en' ? song.contextEn : song.contextBn}
-                </p>
-
-                {/* Click-to-load embed preview player (No autoplay) */}
-                {activeEmbedSong === song.id ? (
-                  <div className="p-4 bg-[#101B25] text-white text-xs space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[#155E63]">Audio / Video Player</span>
-                      <button
-                        onClick={() => setActiveEmbedSong(null)}
-                        className="text-white/60 hover:text-white"
-                      >
-                        Close
-                      </button>
-                    </div>
-                    <p className="text-[#D9E1E5]/80">
-                      {language === 'en'
-                        ? 'Official recording destination ready. Click below to stream on verified platforms.'
-                        : 'অফিসিয়াল রেকর্ডিং প্লেলিস্ট সংযুক্ত। শুনতে নিচের লিংকে ক্লিক করুন।'}
-                    </p>
-                    {song.externalLink && (
-                      <a
-                        href={song.externalLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#155E63] text-white rounded hover:bg-[#155E63]/80"
-                      >
-                        <span>Listen on YouTube / GaanChill</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      </a>
-                    )}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          {filteredSongs.map((song) => (
+            <StaggerItem key={song.id}>
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="h-full p-8 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between space-y-6 hover:border-teal-500/50 hover:shadow-xl transition-all group"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-xs text-slate-500 border-b border-slate-100 pb-3">
+                    <span className="font-mono text-teal-700 font-semibold px-2 py-0.5 rounded bg-teal-50">
+                      {language === 'en' ? song.roleEn : song.roleBn}: Asif Iqbal
+                    </span>
+                    <span className="font-medium font-mono">{song.yearText}</span>
                   </div>
-                ) : null}
-              </div>
 
-              {/* Bottom Actions */}
-              <div className="pt-4 border-t border-[#D9E1E5] flex items-center justify-between gap-3">
-                <button
-                  onClick={() => setActiveEmbedSong(song.id)}
-                  className="px-4 py-2 bg-[#101B25] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#155E63] transition-colors inline-flex items-center gap-2 cursor-pointer"
-                >
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>{language === 'en' ? 'Listen / Details' : 'শুনুন / বিবরণ'}</span>
-                </button>
+                  <div className="space-y-1">
+                    <h3 className="font-display text-3xl font-bold text-[#0D161F] group-hover:text-teal-600 transition-colors">
+                      {language === 'en' ? song.titleEn : song.titleBn}
+                    </h3>
+                    <p className="text-xs text-amber-600 font-medium">
+                      {song.artistCredit}
+                    </p>
+                  </div>
 
-                {song.externalLink && (
-                  <a
-                    href={song.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-[#155E63] hover:text-[#101B25] font-semibold"
+                  <p className="text-sm text-slate-600 leading-relaxed font-body">
+                    {language === 'en' ? song.contextEn : song.contextBn}
+                  </p>
+
+                  {/* Click-to-load embed preview player */}
+                  {activeEmbedSong === song.id ? (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="p-4 rounded-xl bg-[#0D161F] text-white text-xs space-y-3 border border-teal-500/30"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-teal-400 font-semibold flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping" />
+                          Streaming Destination Ready
+                        </span>
+                        <button
+                          onClick={() => setActiveEmbedSong(null)}
+                          className="text-white/60 hover:text-white cursor-pointer"
+                        >
+                          Close
+                        </button>
+                      </div>
+                      <p className="text-slate-300">
+                        {language === 'en'
+                          ? 'Official recording published under verified copyright. Stream the full song on YouTube / GaanChill.'
+                          : 'অফিসিয়াল অনুমোদিত প্ল্যাটফর্মে শুনতে নিচের বাটনে ক্লিক করুন।'}
+                      </p>
+                      {song.externalLink && (
+                        <a
+                          href={song.externalLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold transition-colors cursor-pointer"
+                        >
+                          <span>Listen on YouTube / GaanChill</span>
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                    </motion.div>
+                  ) : null}
+                </div>
+
+                {/* Bottom Actions */}
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                  <button
+                    onClick={() => setActiveEmbedSong(activeEmbedSong === song.id ? null : song.id)}
+                    className="px-4 py-2.5 rounded-xl bg-[#0D161F] hover:bg-teal-600 text-white text-xs font-semibold uppercase tracking-wider transition-colors inline-flex items-center gap-2 cursor-pointer shadow-sm"
                   >
-                    <span>GaanChill Music</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </div>
-            </div>
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>{language === 'en' ? 'Stream & Details' : 'শুনুন ও তথ্য'}</span>
+                  </button>
+
+                  {song.externalLink && (
+                    <a
+                      href={song.externalLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-teal-700 hover:text-teal-900 font-semibold transition-colors"
+                    >
+                      <span>GaanChill Music</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            </StaggerItem>
           ))}
-        </div>
-      </section>
+        </StaggerContainer>
+      </ScrollSection>
 
       {/* PART 2: CULTURAL APPOINTMENTS & ADVOCACY */}
-      <section className="max-w-[1280px] mx-auto px-6 space-y-8">
-        <div className="border-b border-[#D9E1E5] pb-4">
-          <span className="text-xs font-mono uppercase text-[#155E63] font-semibold">Leadership</span>
-          <h2 className="font-display text-2xl sm:text-3xl text-[#101B25]">
+      <ScrollSection className="max-w-[1280px] mx-auto px-6 space-y-8">
+        <ScrollReveal className="border-b border-slate-200 pb-4">
+          <span className="text-xs font-mono uppercase text-teal-600 font-semibold">Leadership</span>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D161F]">
             {language === 'en' ? 'Music Industry Governance & Platforms' : 'সংগীত শিল্পের প্রাতিষ্ঠানিক নেতৃত্ব'}
           </h2>
-          <p className="text-xs text-[#596774] pt-1">
+          <p className="text-xs text-slate-500 pt-1">
             {language === 'en'
               ? 'Institutional advocacy for songwriters’ rights, intellectual property protection, and cultural discovery.'
               : 'গীতিকারদের মেধা ও রয়্যালটি সুরক্ষা, প্রতিভা অন্বেষণ এবং সংগীতের প্রাতিষ্ঠানিক উন্নয়নে ভূমিকা।'}
           </p>
-        </div>
+        </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {culturalAppointments.map((item, idx) => (
-            <div
-              key={idx}
-              className="p-6 bg-white border border-[#D9E1E5] space-y-3"
-            >
-              <div className="text-xs font-mono text-[#155E63]">Role 0{idx + 1}</div>
-              <h3 className="font-display text-xl text-[#101B25]">
-                {language === 'en' ? item.titleEn : item.titleBn}
-              </h3>
-              <div className="text-xs font-semibold text-[#596774]">
-                {language === 'en' ? item.roleEn : item.roleBn}
-              </div>
-              <p className="text-xs text-[#596774] leading-relaxed">
-                {language === 'en' ? item.descEn : item.descBn}
-              </p>
-            </div>
+            <StaggerItem key={idx}>
+              <motion.div
+                whileHover={{ y: -2 }}
+                className="h-full p-6 rounded-2xl bg-white border border-slate-200 space-y-3 shadow-xs hover:border-teal-500/40 hover:shadow-md transition-all"
+              >
+                <span className="text-xs font-mono text-teal-700 font-semibold px-2 py-0.5 rounded bg-teal-50">
+                  {language === 'en' ? item.roleEn : item.roleBn}
+                </span>
+                <h3 className="font-display text-xl font-bold text-[#0D161F]">
+                  {language === 'en' ? item.titleEn : item.titleBn}
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-body">
+                  {language === 'en' ? item.descEn : item.descBn}
+                </p>
+              </motion.div>
+            </StaggerItem>
           ))}
-        </div>
-      </section>
-
-      {/* PART 3: GAANCHILL PLATFORM INVITATION */}
-      <section className="max-w-[1280px] mx-auto px-6">
-        <div className="p-8 sm:p-12 bg-[#101B25] text-white flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <div className="space-y-3 max-w-2xl">
-            <span className="text-xs font-mono text-[#155E63] uppercase">Collaboration</span>
-            <h3 className="font-display text-3xl text-white">
-              {language === 'en' ? 'Collaborate on Original Music' : 'নতুন সংগীত ও সৃজনশীল মেলবন্ধন'}
-            </h3>
-            <p className="text-sm text-[#D9E1E5]/80 leading-relaxed">
-              {language === 'en'
-                ? 'For composers, vocalists, filmmakers, and cultural platforms seeking original lyric poetry or prospective GaanChill Music productions.'
-                : 'চলচ্চিত্র, সুরকার ও সংগীতশিল্পীদের জন্য গান রচনা বা গানচিল মিউজিকের মাধ্যমে কাজ প্রকাশের প্রস্তাব পাঠাতে যোগাযোগ করুন।'}
-            </p>
-          </div>
-
-          <button
-            onClick={() => onNavigate('contact', 'creative')}
-            className="px-6 py-3.5 bg-white text-[#101B25] text-xs font-semibold uppercase tracking-wider hover:bg-[#D9E1E5] transition-colors whitespace-nowrap cursor-pointer shrink-0"
-          >
-            {language === 'en' ? 'Inquire for Music Project' : 'সংগীত সংক্রান্ত যোগাযোগ'}
-          </button>
-        </div>
-      </section>
+        </StaggerContainer>
+      </ScrollSection>
     </div>
   );
 };
