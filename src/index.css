@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-ink: #101B25;
+    --color-paper: #F4F6F7;
+    --color-white: #FFFFFF;
+    --color-teal: #155E63;
+    --color-muted: #596774;
+    --color-border: #D9E1E5;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Manrope', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #101B25;
+    background-color: #F4F6F7;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+}
+
+/* Display & Body Font Utility Classes */
+.font-display {
+  font-family: 'Cormorant Garamond', 'Noto Serif Bengali', Georgia, serif;
+}
+
+.font-bengali-heading {
+  font-family: 'Noto Serif Bengali', 'Cormorant Garamond', serif;
+  letter-spacing: normal !important;
+}
+
+.font-body {
+  font-family: 'Manrope', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-bengali-body {
+  font-family: 'Noto Sans Bengali', 'Manrope', sans-serif;
+  letter-spacing: normal !important;
+  line-height: 1.75;
+}
+
+/* Ensure Bengali text never suffers from wide letter spacing */
+:lang(bn) {
+  letter-spacing: normal !important;
+}
+
+:lang(bn) * {
+  letter-spacing: normal !important;
+}
+
+/* Text balance for headlines */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Focus styles for keyboard accessibility */
+:focus-visible {
+  outline: 2px solid #155E63;
+  outline-offset: 2px;
+}
+
+/* Hairline cultural bridge line motif */
+.bridge-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #D9E1E5 20%, #155E63 50%, #D9E1E5 80%, transparent 100%);
+}
+
