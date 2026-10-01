@@ -1,10 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 import { RoutePath, Language, EnquiryCategory } from '../types';
 import { translations } from '../data/translations';
 import { fourVentures, publishedBooks } from '../data/siteContent';
+import { PortraitSlot } from '../components/PortraitSlot';
 import { assetConfig } from '../data/assetConfig';
-import { ArrowRight, ArrowUpRight, Sparkles, ChevronRight, Play, X, Video } from 'lucide-react';
-import { motion, Variants, AnimatePresence } from 'motion/react';
+import { ArrowRight, ArrowUpRight, Sparkles, ChevronRight } from 'lucide-react';
+import { motion, Variants } from 'motion/react';
 import { GaanChillSoundLounge } from '../components/GaanChillSoundLounge';
 import { PolymathMatrix } from '../components/PolymathMatrix';
 import { ThoughtTicker } from '../components/ThoughtTicker';
@@ -65,250 +66,114 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ onNavigate, language }) => {
   const t = translations[language];
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isVideoIframeReady, setIsVideoIframeReady] = useState(false);
-
-  // Close modal on Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsModalOpen(false);
-    };
-    if (isModalOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
-    };
-  }, [isModalOpen]);
 
   return (
     <div className="space-y-16 lg:space-y-24 pb-20">
       {/* SECTION A: HERO (Extends up behind floating navbar so hero background shines through) */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#080E15] via-[#0E1722] to-[#0A121A] text-white -mt-20 sm:-mt-24 pt-28 sm:pt-36 lg:pt-40 pb-16 lg:pb-24 border-b border-teal-500/20 min-h-[580px] sm:min-h-[640px] flex items-center">
-        {/* Background YouTube Video with Smooth Scale & Entrance Animation */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden select-none">
-          {/* High-Resolution Poster Backdrop from YouTube */}
-          <img
-            src="/images/asif-hero-poster.jpg"
-            alt="Asif Iqbal"
-            className="absolute inset-0 w-full h-full object-cover object-[75%_25%] sm:object-[70%_28%] lg:object-[82%_25%] filter brightness-[0.88] contrast-[1.05]"
-          />
-
-          {/* Seamless Looping YouTube Video Embed */}
-          <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${assetConfig.heroYouTubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${assetConfig.heroYouTubeId}&playsinline=1&rel=0&showinfo=0&modestbranding=1&disablekb=1&iv_load_policy=3&enablejsapi=1`}
-              title="Asif Iqbal Hero Video"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              onLoad={() => setIsVideoIframeReady(true)}
-              className={`w-[180vw] h-[180vh] min-w-[130%] min-h-[130%] pointer-events-none border-0 transition-opacity duration-1000 ${
-                isVideoIframeReady ? 'opacity-75' : 'opacity-0'
-              }`}
-              style={{
-                width: 'max(100%, 177.78vh)',
-                height: 'max(100%, 56.25vw)',
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%) scale(1.18)',
-                filter: 'brightness(0.92) contrast(1.06)',
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Master Filmic Vignette & High-Contrast Gradient Masking */}
-        {/* Deep dark gradient on left so text is crystal clear; transparent on right so Asif Iqbal is visible */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#080E15] via-[#080E15]/90 to-[#080E15]/40 lg:to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A121A] via-[#080E15]/45 to-[#080E15]/80 pointer-events-none" />
-
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#080E15] via-[#0E1722] to-[#0A121A] text-white -mt-20 sm:-mt-24 pt-28 sm:pt-36 lg:pt-40 pb-16 lg:pb-24 border-b border-teal-500/20">
         {/* Ambient Glowing Radial Mesh */}
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute top-1/3 right-10 w-[500px] h-[500px] bg-amber-500/8 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-full h-40 bg-gradient-to-t from-[#0A121A] to-transparent pointer-events-none" />
 
-        <div className="relative z-10 max-w-[1280px] mx-auto px-6 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Main Content Column with Staggered Entrance (8 cols) */}
-            <div className="lg:col-span-8 max-w-2xl lg:max-w-3xl">
-              <motion.div
-                variants={heroTextContainerVariants}
-                initial="hidden"
-                animate="visible"
-                className="space-y-6 sm:space-y-8"
-              >
-                {/* Eyebrow with Pulsing Live Status Dot */}
-                <motion.div variants={heroTextItemVariants}>
-                  <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-teal-950/70 border border-teal-500/35 text-teal-300 text-xs font-semibold tracking-wider uppercase backdrop-blur-md shadow-lg shadow-teal-950/40">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
-                    </span>
-                    <span>{t.brand.eyebrow}</span>
-                  </div>
-                </motion.div>
-
-                {/* H1 & Dual Typography */}
-                <motion.div variants={heroTextItemVariants} className="space-y-3">
-                  <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white text-balance leading-[1.08] drop-shadow-sm">
-                    {language === 'en' ? (
-                      <>
-                        <span>Asif Iqbal</span>
-                        <span className="block text-2xl sm:text-3xl font-bengali-heading font-medium text-teal-400/90 pt-2 tracking-normal">
-                          আসিফ ইকবাল
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="font-bengali-heading">আসিফ ইকবাল</span>
-                        <span className="block text-2xl sm:text-3xl font-display font-medium text-teal-400/90 pt-2 tracking-normal">
-                          Asif Iqbal
-                        </span>
-                      </>
-                    )}
-                  </h1>
-
-                  {/* Subtitle / Positioning Tagline */}
-                  <div className="text-xl sm:text-2xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-200">
-                    {t.brand.positioning}
-                  </div>
-                </motion.div>
-
-                {/* Body Summary */}
-                <motion.p
-                  variants={heroTextItemVariants}
-                  className="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl text-balance drop-shadow-xs"
-                >
-                  "{t.brand.heroSummary}"
-                </motion.p>
-
-                {/* Prestigious Brand Philosophy Line */}
-                <motion.div
-                  variants={heroTextItemVariants}
-                  className="p-4 sm:p-5 rounded-xl bg-black/40 backdrop-blur-md border-l-2 border-teal-400 border-y border-r border-white/10 text-sm sm:text-base text-slate-100 font-editorial italic max-w-2xl shadow-xl"
-                >
-                  "{t.brand.brandLine}"
-                </motion.div>
-
-                {/* Action Buttons with Interactive Springs */}
-                <motion.div variants={heroTextItemVariants} className="pt-2 flex flex-wrap items-center gap-4">
-                  <button
-                    onClick={() => onNavigate('work')}
-                    className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 text-xs font-bold uppercase tracking-wider transition-all duration-200 inline-flex items-center gap-2 shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
-                  >
-                    <span>{t.brand.ctaWork}</span>
-                    <ArrowRight className="w-4 h-4 text-slate-950" />
-                  </button>
-
-                  <button
-                    onClick={() => onNavigate('story')}
-                    className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/25 hover:border-white/40 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer backdrop-blur-md transform hover:-translate-y-0.5 active:translate-y-0 shadow-lg"
-                  >
-                    <span>{t.brand.ctaStory}</span>
-                  </button>
-
-                  {/* Watch Video Button */}
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="px-5 py-3.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 border border-teal-400/40 hover:border-teal-400 text-teal-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 inline-flex items-center gap-2.5 cursor-pointer backdrop-blur-md transform hover:-translate-y-0.5 active:translate-y-0 shadow-lg group"
-                  >
-                    <span className="w-5 h-5 rounded-full bg-teal-400 text-slate-950 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Play className="w-3 h-3 fill-current ml-0.5" />
-                    </span>
-                    <span>{language === 'en' ? 'Watch Video' : 'ভিডিও দেখুন'}</span>
-                  </button>
-                </motion.div>
+        <div className="relative z-10 max-w-[1280px] mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left Content Column (7 cols) with Staggered Entrance */}
+            <motion.div
+              variants={heroTextContainerVariants}
+              initial="hidden"
+              animate="visible"
+              className="lg:col-span-7 space-y-6 sm:space-y-8"
+            >
+              {/* Eyebrow with Pulsing Live Status Dot */}
+              <motion.div variants={heroTextItemVariants}>
+                <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-teal-950/60 border border-teal-500/30 text-teal-300 text-xs font-semibold tracking-wider uppercase">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                  </span>
+                  <span>{t.brand.eyebrow}</span>
+                </div>
               </motion.div>
-            </div>
 
-            {/* Right Side Video Presence Anchor (4 cols) */}
-            <div className="hidden lg:flex lg:col-span-4 justify-end items-end self-end pb-2">
-              <motion.button
-                onClick={() => setIsModalOpen(true)}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="px-4 py-2.5 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-teal-500/40 hover:border-teal-400 text-xs text-teal-300 hover:text-white font-medium flex items-center gap-2.5 shadow-xl transition-all group cursor-pointer"
+              {/* H1 & Dual Typography */}
+              <motion.div variants={heroTextItemVariants} className="space-y-3">
+                <h1 className="font-display text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-white text-balance leading-[1.04]">
+                  {language === 'en' ? (
+                    <>
+                      <span className="block text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight">Asif Iqbal</span>
+                      <span className="block text-2xl sm:text-3xl font-bengali-heading font-medium text-teal-400/90 pt-2 tracking-normal">
+                        আসিফ ইকবাল
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-bengali-heading block text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight">আসিফ ইকবাল</span>
+                      <span className="block text-2xl sm:text-3xl font-display font-medium text-teal-400/90 pt-2 tracking-normal">
+                        Asif Iqbal
+                      </span>
+                    </>
+                  )}
+                </h1>
+
+                {/* Subtitle / Positioning Tagline */}
+                <div className="text-xl sm:text-2xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-200">
+                  {t.brand.positioning}
+                </div>
+              </motion.div>
+
+              {/* Body Summary */}
+              <motion.p
+                variants={heroTextItemVariants}
+                className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl text-balance"
               >
-                <span className="w-6 h-6 rounded-full bg-teal-500 text-slate-950 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Play className="w-3 h-3 fill-current ml-0.5" />
-                </span>
-                <span className="font-mono uppercase tracking-wider text-[11px] text-slate-200">
-                  {language === 'en' ? 'Watch Keynote (Sound On)' : 'মূল ভিডিওটি শুনুন'}
-                </span>
-              </motion.button>
-            </div>
+                "{t.brand.heroSummary}"
+              </motion.p>
+
+              {/* Prestigious Brand Philosophy Line */}
+              <motion.div
+                variants={heroTextItemVariants}
+                className="p-4 rounded-xl bg-white/[0.03] border-l-2 border-teal-400 border-y border-r border-white/5 text-sm sm:text-base text-slate-200 font-editorial italic"
+              >
+                "{t.brand.brandLine}"
+              </motion.div>
+
+              {/* Action Buttons with Interactive Springs */}
+              <motion.div variants={heroTextItemVariants} className="pt-2 flex flex-wrap items-center gap-4">
+                <button
+                  onClick={() => onNavigate('work')}
+                  className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-950 text-xs font-bold uppercase tracking-wider transition-all duration-200 inline-flex items-center gap-2 shadow-lg shadow-teal-500/20 hover:shadow-teal-500/35 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  <span>{t.brand.ctaWork}</span>
+                  <ArrowRight className="w-4 h-4 text-slate-950" />
+                </button>
+
+                <button
+                  onClick={() => onNavigate('story')}
+                  className="px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/40 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer backdrop-blur-sm transform hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  <span>{t.brand.ctaStory}</span>
+                </button>
+              </motion.div>
+            </motion.div>
+
+            {/* Right Column: Authentic Executive Portrait Slot (5 cols) */}
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="lg:col-span-5"
+            >
+              <PortraitSlot
+                photoUrl={assetConfig.heroPortraitUrl}
+                altText={language === 'en' ? 'Asif Iqbal – The Polymath Builder' : 'আসিফ ইকবাল'}
+                className="w-full min-h-[480px] sm:min-h-[540px]"
+                language={language}
+              />
+            </motion.div>
           </div>
         </div>
       </section>
-
-      {/* Full Cinema Video Modal for YouTube Player */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-lg p-4 sm:p-6"
-            onClick={() => setIsModalOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl bg-slate-950 rounded-2xl overflow-hidden border border-teal-500/40 shadow-2xl"
-            >
-              {/* Modal Header */}
-              <div className="flex items-center justify-between px-5 py-3.5 bg-slate-900 border-b border-slate-800 text-slate-200 text-sm">
-                <div className="flex items-center gap-2">
-                  <Video className="w-4 h-4 text-teal-400" />
-                  <span className="font-semibold text-white">
-                    {language === 'en' ? 'Asif Iqbal – Keynote & Leadership' : 'আসিফ ইকবাল – বক্তব্য ও প্রজ্ঞা'}
-                  </span>
-                </div>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-                  aria-label="Close video"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* 16:9 YouTube Player */}
-              <div className="relative aspect-video w-full bg-black">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${assetConfig.heroYouTubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
-                  title="Asif Iqbal Video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full border-0"
-                />
-              </div>
-
-              {/* Modal Footer */}
-              <div className="flex items-center justify-between px-5 py-3 bg-slate-900/80 text-xs text-slate-400 border-t border-slate-800">
-                <span>{language === 'en' ? 'YouTube Official Video' : 'ইউটিউব অফিসিয়াল ভিডিও'}</span>
-                <a
-                  href={assetConfig.heroYouTubeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-teal-400 hover:text-teal-300 font-medium inline-flex items-center gap-1 hover:underline"
-                >
-                  <span>{language === 'en' ? 'Open in YouTube' : 'ইউটিউবে খুলুন'}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* SECTION B: LATEST THOUGHTS TICKER (Enhances Polymath Branding) */}
       <ThoughtTicker language={language} onNavigate={onNavigate} />
@@ -369,14 +234,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, language }) => {
           variants={sectionHeaderContainerVariants}
           className="text-center max-w-3xl mx-auto space-y-3"
         >
-          <motion.div variants={sectionHeaderItemVariants} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold tracking-wider uppercase">
-            <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+          <motion.div variants={sectionHeaderItemVariants} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-semibold tracking-wider uppercase">
+            <Sparkles className="w-3.5 h-3.5 text-teal-600" />
             <span>{language === 'en' ? 'The Convergence Architecture' : 'চারটি মূল শক্তির মেলবন্ধন'}</span>
           </motion.div>
-          <motion.h2 variants={sectionHeaderItemVariants} className="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold tracking-tight">
+          <motion.h2 variants={sectionHeaderItemVariants} className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#0D161F] font-bold tracking-tight">
             {t.home.connectingIdeaHeading}
           </motion.h2>
-          <motion.p variants={sectionHeaderItemVariants} className="text-base sm:text-lg text-slate-300 leading-relaxed font-body">
+          <motion.p variants={sectionHeaderItemVariants} className="text-base sm:text-lg text-slate-600 leading-relaxed font-body">
             {t.home.connectingIdeaParagraph}
           </motion.p>
         </motion.div>

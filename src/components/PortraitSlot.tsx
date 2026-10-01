@@ -84,7 +84,7 @@ export const PortraitSlot: React.FC<PortraitSlotProps> = ({
           alt={altText}
           onError={() => setImgError(true)}
           referrerPolicy="no-referrer"
-          className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover object-top transition-transform duration-700 ease-out hover:scale-105 group-hover:scale-105 will-change-transform cursor-pointer"
         />
         {/* Cinematic Vignette */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A1118] via-black/20 to-transparent pointer-events-none" />
