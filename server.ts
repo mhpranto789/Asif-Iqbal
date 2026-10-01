@@ -83,16 +83,8 @@ async function startServer() {
         voiceModel: voiceModel,
       });
     } catch (err: any) {
-      const isQuotaError = err?.status === 'RESOURCE_EXHAUSTED' || err?.message?.includes('429') || err?.message?.includes('quota');
-      if (isQuotaError) {
-        console.warn('Gemini TTS quota exceeded. Client falling back to browser synthesis.');
-        return res.status(429).json({
-          error: 'Gemini TTS daily quota reached. Falling back to browser audio narration.',
-          fallbackToWebSpeech: true
-        });
-      }
-      console.warn('TTS Generation notice:', err?.message || err);
-      res.status(500).json({ error: err?.message || 'TTS generation failed', fallbackToWebSpeech: true });
+      console.error('TTS Generation error:', err);
+      res.status(500).json({ error: err.message || 'TTS generation failed' });
     }
   });
 

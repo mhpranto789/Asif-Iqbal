@@ -234,14 +234,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, language }) => {
           variants={sectionHeaderContainerVariants}
           className="text-center max-w-3xl mx-auto space-y-3"
         >
-          <motion.div variants={sectionHeaderItemVariants} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold tracking-wider uppercase">
-            <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+          <motion.div variants={sectionHeaderItemVariants} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-semibold tracking-wider uppercase">
+            <Sparkles className="w-3.5 h-3.5 text-teal-600" />
             <span>{language === 'en' ? 'The Convergence Architecture' : 'চারটি মূল শক্তির মেলবন্ধন'}</span>
           </motion.div>
-          <motion.h2 variants={sectionHeaderItemVariants} className="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold tracking-tight">
+          <motion.h2 variants={sectionHeaderItemVariants} className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#0D161F] font-bold tracking-tight">
             {t.home.connectingIdeaHeading}
           </motion.h2>
-          <motion.p variants={sectionHeaderItemVariants} className="text-base sm:text-lg text-slate-300 leading-relaxed font-body">
+          <motion.p variants={sectionHeaderItemVariants} className="text-base sm:text-lg text-slate-600 leading-relaxed font-body">
             {t.home.connectingIdeaParagraph}
           </motion.p>
         </motion.div>
