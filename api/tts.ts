@@ -1,6 +1,15 @@
 import { GoogleGenAI } from '@google/genai';
 
 export default async function handler(req: any, res: any) {
+  // CORS Headers for Vercel Serverless Function
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -20,8 +29,8 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: 'Text string is required' });
     }
 
-    // Check if GEMINI_API_KEY is available
-    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+    // Check if GEMINI_API_KEY is available across common environment variable keys
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
       return res.status(503).json({
         error: 'Gemini API Key is not configured on this Vercel deployment. Client fallback active.',

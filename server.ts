@@ -83,16 +83,41 @@ async function startServer() {
         voiceModel: voiceModel,
       });
     } catch (err: any) {
-      const isQuotaError = err?.status === 'RESOURCE_EXHAUSTED' || err?.message?.includes('429') || err?.message?.includes('quota');
-      if (isQuotaError) {
-        console.warn('Gemini TTS quota exceeded. Client falling back to browser synthesis.');
-        return res.status(429).json({
-          error: 'Gemini TTS daily quota reached. Falling back to browser audio narration.',
-          fallbackToWebSpeech: true
+      console.error('TTS Generation error:', err);
+      res.status(500).json({ error: err.message || 'TTS generation failed' });
+    }
+  });
+
+  // Contact Inquiries API Route (Parity with Vercel /api/contact.ts)
+  app.post('/api/contact', (req, res) => {
+    try {
+      const { name, email, organisation, enquiryType, message } = req.body || {};
+
+      if (!name || !email || !message) {
+        return res.status(400).json({
+          error: 'Missing required fields: name, email, and message are required.'
         });
       }
-      console.warn('TTS Generation notice:', err?.message || err);
-      res.status(500).json({ error: err?.message || 'TTS generation failed', fallbackToWebSpeech: true });
+
+      if (!email.includes('@') || !email.includes('.')) {
+        return res.status(400).json({
+          error: 'Invalid email address provided.'
+        });
+      }
+
+      console.log(`[Contact Submission] Category: ${enquiryType || 'general'} | From: ${name} <${email}> | Org: ${organisation || 'N/A'}`);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Your inquiry has been received. Our team will review your message promptly.',
+        receivedAt: new Date().toISOString(),
+        referenceId: `INQ-${Date.now().toString(36).toUpperCase()}`
+      });
+    } catch (error) {
+      console.error('[Contact Error]', error);
+      return res.status(500).json({
+        error: 'An unexpected server error occurred while processing your message.'
+      });
     }
   });
 
