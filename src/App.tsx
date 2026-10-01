@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RoutePath, Language, EnquiryCategory } from './types';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { Navigation } from './components/Navigation';
 import { Footer } from './components/Footer';
 import { ScrollProgressBar } from './components/ScrollReveal';
@@ -19,7 +20,8 @@ import { BlogPage } from './pages/BlogPage';
 import { ContactPage } from './pages/ContactPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
-export default function App() {
+function AppContent() {
+  const { theme } = useTheme();
   const [language, setLanguage] = useState<Language>(() => {
     try {
       const saved = localStorage.getItem('asif_iqbal_lang');
@@ -139,15 +141,17 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${
-      currentRoute === 'home' && !isNotFound ? 'bg-[#080E15]' : 'bg-[#F4F6F7]'
-    } text-[#101B25] transition-colors duration-300 ${
-      language === 'bn' ? 'font-bengali-body' : 'font-body'
-    }`}>
+    <div
+      className={`min-h-screen flex flex-col transition-colors duration-300 ${
+        theme === 'dark'
+          ? 'bg-[#080E15] text-[#F4F6F7]'
+          : 'bg-[#F4F6F7] text-[#101B25]'
+      } ${language === 'bn' ? 'font-bengali-body' : 'font-body'}`}
+    >
       {/* Dynamic Scroll Progress Bar */}
       <ScrollProgressBar />
 
-      {/* Top Bar Navigation */}
+      {/* Top Bar Navigation with Header Dark Mode Toggle */}
       <Navigation
         currentRoute={isNotFound ? 'home' : currentRoute}
         onNavigate={handleNavigate}
@@ -205,8 +209,16 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Editorial Footer */}
+      {/* Editorial Footer with Newsletter */}
       <Footer onNavigate={handleNavigate} language={language} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
