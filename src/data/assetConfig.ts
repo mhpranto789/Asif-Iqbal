@@ -4,11 +4,15 @@
  * or connect a production backend email API.
  */
 export const assetConfig = {
-  // Approved photography of Asif Iqbal:
-  // Captured from the official keynote and leadership discourse series:
-  heroPortraitUrl: "/images/asif-hero-poster.jpg",
-  secondaryPortraitUrl: "/images/asif-hero-poster.jpg",
+  // Approved photography of Asif Iqbal (set when official portraits are provided):
+  heroPortraitUrl: null as string | null,
+  secondaryPortraitUrl: null as string | null,
   heroVideoUrl: "/videos/asif-hero.mp4",
+  // Official Hero YouTube Video Link & ID
+  heroYouTubeUrl: "https://www.youtube.com/watch?v=_IllSacStyc",
+  heroYouTubeId: "_IllSacStyc",
+  // Google Drive Media Resource Folder
+  mediaDriveFolderUrl: "https://drive.google.com/drive/folders/1vjm9uBb4IMYhtgUeLa1ifDIY7OrSYD8N",
 
   // Production Domain for Canonical URLs & Social Sharing
   productionDomain: "https://asifiqbal.com",
