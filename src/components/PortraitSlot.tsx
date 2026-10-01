@@ -100,6 +100,26 @@ export const PortraitSlot: React.FC<PortraitSlotProps> = ({
           </div>
         </div>
 
+        {/* Bottom Editorial Caption */}
+        <div className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-xs text-white/90 bg-black/50 backdrop-blur-md p-3 rounded-xl border border-white/10">
+          <div>
+            <div className="font-display font-semibold tracking-wide text-white">
+              {language === 'en' ? 'Asif Iqbal' : 'আসিফ ইকবাল'}
+            </div>
+            <div className="text-[10px] text-slate-300">
+              {language === 'en' ? 'Polymath Builder' : 'সংস্কৃতি ও রূপান্তরের সেতুবন্ধ'}
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowInput(!showInput)}
+            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+            title="Change photo"
+          >
+            <Camera className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
         {/* Dropdown Change Photo Box */}
         {showInput && (
           <div className="absolute inset-x-4 top-16 z-20 p-4 rounded-xl bg-slate-900/95 backdrop-blur-md border border-teal-500/40 shadow-2xl space-y-3">
